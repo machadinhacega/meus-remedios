@@ -9,6 +9,9 @@ sim_ou_nao = sim+nao
 
 def add_info_remedio(remedios):
   remedio = input('Qual o nome do remédio?\n► ').upper().strip()
+  while remedio.isnumeric() or remedio.isalnum() == False:
+    remedio = input('      Por favor, digite um nome válido\n      Qual o nome do remédio?\n      ► ').upper().strip()  
+  
   intervalo = input('Qual o intervalo entre as dosagens? (Ex: 8h)\n► ').strip()
   quantidade = input('Quantos comprimidos você deve tomar por vez\n► ').strip()
   dias = input('Durante quantos dias você deve tomar essa medicação?\n► ').strip()
