@@ -87,5 +87,6 @@ Fique com a mensagem da nossa robô:
       print('Os horários do medicamento são:')
       for i in remedios[remedio]['alarmes']:
         print(i, end='h ')
-        print()   
+        print()
+      print('Total de comprimidos: {}'.format(remedios[remedio]['quantidade']*len(remedios[remedio]['alarmes'])*remedios[remedio]['dias']))
     break
