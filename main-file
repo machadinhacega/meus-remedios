@@ -1,0 +1,91 @@
+import datetime
+
+remedios={}
+sugestao = 6
+sim = ['SIM', 'S']
+nao = ['NÃO', 'NAO', 'N']
+sim_ou_nao = sim+nao
+
+
+def add_info_remedio(remedios):
+  remedio = input('Qual o nome do remédio?\n► ').upper().strip()
+  intervalo = input('Qual o intervalo entre as dosagens? (Ex: 8h)\n► ').strip()
+  quantidade = input('Quantos comprimidos você deve tomar por vez\n► ').strip()
+  dias = input('Durante quantos dias você deve tomar essa medicação?\n► ').strip()
+ 
+  quest_sugest = input('Nossa sugestão é iniciar o medicamento às {}h.\nAceita o horário sugerido?\n► '.format(sugestao)).upper().strip()
+  while quest_sugest not in sim_ou_nao:
+    quest_sugest = input('      Por favor, responda apenas com "Sim" ou "Não"\n      Aceita o horário sugerido?\n      ►  ').upper().strip()
+  if quest_sugest in sim:
+    hora_remedio = str(sugestao)
+  elif quest_sugest in nao:
+    quest_agora = input('Ok, então tudo bem a gente começar agora?\n►  ').upper().strip()
+    while quest_agora not in sim_ou_nao:
+      quest_agora = input('      Por favor, responda apenas com "Sim" ou "Não"\n      Tudo bem a gente começar agora?\n      ►  ').upper().strip()
+    if quest_agora in sim:
+      hora_remedio = str(datetime.datetime.now().hour)
+    elif quest_agora in nao:
+      hora_remedio = input('Tudo bem. Escolha o horário que quer iniciar a medicação (Ex: 16h)\n► ').strip()
+
+
+
+  remedios[remedio]= {
+  "intervalo": int(intervalo.split('h')[0]),
+  "quantidade": int(quantidade),
+  "dias": int(dias),
+  "hora_remedio": int(hora_remedio.split('h')[0])
+    
+}
+  return remedio
+  
+
+def definir_alarmes(remedios):
+  por_dia= int(24/remedios[remedio]['intervalo'])
+  alarmes = []
+  hora_alarmes = remedios[remedio]['hora_remedio']
+  for i in range(por_dia):
+    if hora_alarmes < 24:
+      alarmes.append(hora_alarmes)
+    elif hora_alarmes >= 24:
+      alarmes.append(hora_alarmes-24)
+    hora_alarmes+=remedios[remedio]['intervalo']
+  remedios[remedio]['alarmes'] = alarmes
+  return alarmes
+
+def definir_inicio_fim_remedio(remedios):
+  dia_atual = datetime.date.today().day
+  data_final = dia_atual + remedios[remedio]['dias']
+  hora_final = alarmes[-1]
+  remedios[remedio]['data_inicio'] = dia_atual
+  remedios[remedio]['data_fim'] = data_final
+  remedios[remedio]['hora_fim'] = hora_final
+  
+
+# FUNÇÕES ACIMA ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲
+
+while True:
+  remedio = add_info_remedio(remedios)
+  alarmes = definir_alarmes(remedios)
+  definir_inicio_fim_remedio(remedios)
+  quest_break = input('Você vai tomar mais remédios? ').upper().strip()
+  while quest_break not in sim_ou_nao:
+    quest_break = input('Por favor, responda apenas com "Sim" ou "Não"\n Você vai tomar mais remédios? ').upper()
+  if quest_break in sim:
+    sugestao+=1
+  elif quest_break in nao:
+    print(""" ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼
+Confira abaixo as principais informações sobre seu tratamento.
+E mais importante: Não esqueça seus remédios.
+Ficamos felizes em poder lhe ajudar nisso.
+Fique com a mensagem da nossa robô:
+"🤖 Isso fica feliz em ser útil 🤖".
+          """)
+    for remedio, info in remedios.items():
+      print('\033[1;43m'+remedio+'\033[0;0m')
+      print('{} comprimido de {} em {} horas por {} dias'.format(remedios[remedio]['quantidade'],remedios[remedio]['intervalo'], remedios[remedio]['intervalo'],remedios[remedio]['dias']))
+      print('Você vai iniciar a medicação dia {} às {}h. \nE deve tomar a ultima dose dia {} às {}h'.format(remedios[remedio]['data_inicio'], remedios[remedio]['hora_remedio'],remedios[remedio]['data_fim'], remedios[remedio]['hora_fim']))
+      print('Os horários do medicamento são:')
+      for i in remedios[remedio]['alarmes']:
+        print(i, end='h ')
+        print()   
+    break
