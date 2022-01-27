@@ -1,6 +1,7 @@
-# ARQUIVO FUNÇÕES ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ ▼ 
+from datetime import date, datetime
 
-import datetime
+########################## ARQUIVO FUNÇÕES  ################################################################### 
+
 sugestao = 6
 sim = ['SIM', 'S']
 nao = ['NÃO', 'NAO', 'N']
@@ -63,16 +64,17 @@ def definir_alarmes(remedios):
   return alarmes
 
 def definir_inicio_fim_remedio(remedios):
-  dia_atual = datetime.date.today().day
-  data_final = dia_atual + remedios[remedio]['dias']
+  dia_atual = date.today()
+  data_final = date.fromordinal(dia_atual.toordinal()+remedios[remedio]['dias'])
   hora_final = alarmes[-1]
-  remedios[remedio]['data_inicio'] = dia_atual
-  remedios[remedio]['data_fim'] = data_final
+  remedios[remedio]['data_inicio'] = dia_atual.day
+  remedios[remedio]['data_fim'] = data_final.day
   remedios[remedio]['hora_fim'] = hora_final
-  
-# ARQUIVO FUNÇÕES ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲
 
-  
+
+############################################################################################
+
+
 remedios={}
 
 while True:
