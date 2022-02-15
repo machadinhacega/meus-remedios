@@ -1,4 +1,7 @@
+#rodar na primeira vez
 from datetime import date, datetime
+remedios={}
+
 
 ########################## ARQUIVO FUNÇÕES  ################################################################### 
 
@@ -16,6 +19,9 @@ def add_info_remedio(remedios):
   while intervalo.isalpha() == True or ('H' not in intervalo and intervalo.isnumeric()==False) or len(intervalo)>7:
     intervalo = input('      Por favor, digite no formato "8h")\n      Qual o intervalo entre as dosagens?\n      ► ').upper().strip().replace(" ","")
   intervalo = int(intervalo.split('H')[0])
+  if intervalo > 12:
+    print('Como o intervalo escolhido é maior que 12 horas, vamos assumir que você irá tomar 1 vez ao dia')
+    intervalo = 24
 
   quantidade = input('Quantos comprimidos você deve tomar por vez\n► ').strip()
   while quantidade.isnumeric()==False:
@@ -64,18 +70,17 @@ def definir_alarmes(remedios):
   return alarmes
 
 def definir_inicio_fim_remedio(remedios):
-  dia_atual = date.today()
-  data_final = date.fromordinal(dia_atual.toordinal()+remedios[remedio]['dias'])
+  data_atual = date.today()
+  data_final = date.fromordinal(data_atual.toordinal()+remedios[remedio]['dias'])
   hora_final = alarmes[-1]
-  remedios[remedio]['data_inicio'] = dia_atual.day
-  remedios[remedio]['data_fim'] = data_final.day
-  remedios[remedio]['hora_fim'] = hora_final
+  remedios[remedio]['data_inicio'] = data_atual
+  remedios[remedio]['data_final'] = data_final
+  remedios[remedio]['hora_final'] = hora_final
 
 
 ############################################################################################
 
 
-remedios={}
 
 while True:
   remedio = add_info_remedio(remedios)
@@ -93,12 +98,16 @@ while True:
           
 """)
     for remedio, info in remedios.items():
+      print('💊', end=' ')
       print('\033[1;43m'+remedio+'\033[0;0m')
-      print('{} comprimido de {} em {} horas por {} dias'.format(remedios[remedio]['quantidade'],remedios[remedio]['intervalo'], remedios[remedio]['intervalo'],remedios[remedio]['dias']))
-      print('Você vai iniciar a medicação dia {} às {}h. \nE deve tomar a ultima dose dia {} às {}h'.format(remedios[remedio]['data_inicio'], remedios[remedio]['hora_remedio'],remedios[remedio]['data_fim'], remedios[remedio]['hora_fim']))
-      print('Os horários do medicamento são:')
+      plural=''
+      if remedios[remedio]['quantidade']>1:
+        plural='s'
+      print('{} comprimido{} de {} em {} horas por {} dias'.format(remedios[remedio]['quantidade'],plural,remedios[remedio]['intervalo'], remedios[remedio]['intervalo'],remedios[remedio]['dias']))
+      print('Você vai iniciar a medicação em {}/{}/{} às {}h. \nE deve tomar a última dose em {}/{}/{} às {}h'.format(remedios[remedio]['data_inicio'].day, remedios[remedio]['data_inicio'].month, remedios[remedio]['data_inicio'].year, remedios[remedio]['hora_remedio'],remedios[remedio]['data_final'].day, remedios[remedio]['data_final'].month, remedios[remedio]['data_final'].year, remedios[remedio]['hora_final']))
+      print('Horário do medicamento:', end=' ')
       for i in remedios[remedio]['alarmes']:
-        print(i, end='h ')
-        print()
-      print('Total de comprimidos: {}'.format(remedios[remedio]['quantidade']*len(remedios[remedio]['alarmes'])*remedios[remedio]['dias']))
+        print(i, end='h | ')
+      print('\nTotal de comprimidos: {}'.format(remedios[remedio]['quantidade']*len(remedios[remedio]['alarmes'])*remedios[remedio]['dias']))
     break
+    
